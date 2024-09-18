@@ -1,0 +1,48 @@
+&i2c0 {
+    ov7670_camera: ov7670_camera@21 {
+        compatible= "ovti,ov7670";
+        status = "okay";
+        reg=<0x21>;
+    };  
+        oled0: oled0@3c {
+        compatible= "solomon,ssd1306fb";
+        reg =<0x3c>;
+        height=<64>;
+        width=<128>;
+        segment-offset=<0>;
+        page-offset=<0>;
+        display-offset=<0>;
+        multiplex-ratio=<63>;
+        segment-remap;
+        com-invdir;
+        prechargep= <0x22>;
+    };     
+};
+    &pinctrl {
+        pwmc_default: pwmc_default {
+                group1 {
+                    pinmux = <LEDC_CH0_GPIO0>;
+                    output-enable;
+                };
+        };
+    };
+    &ledc0 {
+        pinctrl-0 = <&pwmc_default>;
+        pinctrl-names = "default";
+        #address-cells = <1>;
+        #size-cells = <0>;
+        status = "okay";
+        channel0@0 {
+            reg = <0x0>;
+            timer = <0>;
+        };
+    };
+/
+{
+    pwmled {
+        compatible = "pwm-leds";     
+        pwml0: pwml_0 {
+            pwms=<&ledc0 0 100 PWM_POLARITY_NORMAL>;
+        };
+    };
+};
